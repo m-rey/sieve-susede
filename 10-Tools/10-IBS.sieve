@@ -4,12 +4,12 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #######################
 #####    I B S    #####
 #######################
-# Tools
-# └── IBS
+# TOOLS
+# └── ibs
 #     ├── build
 #     └── requests
-#         ├── pushed back
-#         └── to review
+#         ├── pushed-back
+#         └── to-review
 
 # rule:[mute bots]
 # Delete noisy bot comments
@@ -42,7 +42,7 @@ if allof ( header :is "X-Mailer" "OBS Notification System",
            header :is "X-OBS-URL" "https://build.suse.de",
            header :is "x-obs-event-type" "review_wanted",
            header :is "x-obs-review-by-group" "security-team" ) {
-    fileinto :create "INBOX/Tools/IBS/requests/to review";
+    fileinto :create "INBOX/TOOLS/ibs/requests/to-review";
     stop;
 }
 
@@ -53,7 +53,7 @@ if allof (     header :is "X-Mailer" "OBS Notification System",
                header :is "x-obs-request-creator" "${BZ_USERNAME}",
                header :is "x-obs-event-type" "request_statechange",
            not header :is "x-obs-request-state" "accepted" ) {
-    fileinto :create "INBOX/Tools/IBS/requests/pushed back";
+    fileinto :create "INBOX/TOOLS/ibs/requests/pushed-back";
     stop;
 }
 
@@ -63,7 +63,7 @@ if allof ( header  :is "X-Mailer" "OBS Notification System",
            header  :is "X-OBS-URL" "https://build.suse.de",
            address :contains "To" "${SUSECOM_ADDR}",
            header  :contains "x-obs-event-type" "build_fail" ) {
-    fileinto :create "INBOX/Tools/IBS/build";
+    fileinto :create "INBOX/TOOLS/ibs/build";
     stop;
 }
 
@@ -72,7 +72,7 @@ if allof ( header  :is "X-Mailer" "OBS Notification System",
 if allof ( header :is "X-Mailer" "OBS Notification System",
            header :is "X-OBS-URL" "https://build.suse.de",
            header :is "x-obs-request-creator" "${BZ_USERNAME}" ) {
-    fileinto :create "INBOX/Tools/IBS/requests";
+    fileinto :create "INBOX/TOOLS/ibs/requests";
     stop;
 }
 
@@ -80,6 +80,6 @@ if allof ( header :is "X-Mailer" "OBS Notification System",
 # Any other notification from IBS goes into the generic IBS folder
 if allof ( header :is "X-Mailer" "OBS Notification System",
            header :is "X-OBS-URL" "https://build.suse.de" ) {
-    fileinto :create "INBOX/Tools/IBS";
+    fileinto :create "INBOX/TOOLS/ibs";
     stop;
 }

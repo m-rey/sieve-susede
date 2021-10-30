@@ -4,12 +4,12 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #######################
 #####   J I R A   #####
 #######################
-# Tools
-# └── Jira
+# TOOLS
+# └── jira
 
 # rule:[catch all]
 # Notifications from Jira end up here.
 if allof ( address :is "From" "jira@suse.com" ) {
-    fileinto :create "INBOX/Tools/Jira";
+    fileinto :create "INBOX/TOOLS/jira";
     stop;
 }

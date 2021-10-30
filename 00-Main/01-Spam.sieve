@@ -1,6 +1,11 @@
 require ["fileinto", "mailbox", "variables", "include"];
 global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 
+#######################
+#####   S P A M   #####
+#######################
+# Spam
+
 # rule:[Spam]
 if allof ( header :contains "X-Spam-Flag" "YES",
            #_____________________________#

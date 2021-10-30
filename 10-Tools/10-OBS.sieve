@@ -4,10 +4,10 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #######################
 #####    O B S    #####
 #######################
-# Tools
-# └── OBS
+# TOOLS
+# └── obs
 #     ├── build
-#     └── Security Tools
+#     └── security-tools
 
 # rule:[mute bots]
 # Delete noisy bot comments
@@ -27,7 +27,7 @@ if allof ( header :is "x-mailer" "OBS Notification System",
 if allof ( header  :is "X-Mailer" "OBS Notification System",
            header  :is "X-OBS-URL" "https://build.opensuse.org",
            address :is "To" "security-team@suse.de" ) {
-    fileinto :create "INBOX/Tools/OBS/Security tools";
+    fileinto :create "INBOX/TOOLS/obs/security-tools";
     stop;
 }
 
@@ -37,7 +37,7 @@ if allof ( header  :is "X-Mailer" "OBS Notification System",
            header  :is "X-OBS-URL" "https://build.opensuse.org",
            address :contains "To" "${SUSECOM_ADDR}",
            header  :contains "x-obs-event-type" "build_fail" ) {
-    fileinto :create "INBOX/Tools/OBS/build";
+    fileinto :create "INBOX/TOOLS/obs/build";
     stop;
 }
 
@@ -45,6 +45,6 @@ if allof ( header  :is "X-Mailer" "OBS Notification System",
 # Any other notification from OBS goes into the generic OBS folder
 if allof ( header :is "X-Mailer" "OBS Notification System",
            header :is "X-OBS-URL" "https://build.opensuse.org" ) {
-    fileinto :create "INBOX/Tools/OBS";
+    fileinto :create "INBOX/TOOLS/obs";
     stop;
 }

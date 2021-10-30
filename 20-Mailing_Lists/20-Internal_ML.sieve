@@ -10,27 +10,27 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 # ML
 # └── SUSE
 #     ├── security-team
-#     │   ├── Xorg
-#     │   └── Samba
+#     │   ├── xorg
+#     │   └── samba
 #     ├── security
-#     │   ├── Xen
-#     │   │   └── Security Advisory
-#     │   ├── MariaDB
-#     │   ├── Django
-#     │   ├── Ceph
-#     │   ├── Kubernetes
-#     │   ├── Qemu
-#     │   ├── Cloud Foundry
-#     │   └── Mitre
-#     │       ├── SUSE CNA
-#     │       └── CVE-CNA
+#     │   ├── xen
+#     │   │   └── security-advisory
+#     │   ├── mariadb
+#     │   ├── django
+#     │   ├── ceph
+#     │   ├── kubernetes
+#     │   ├── qemu
+#     │   ├── cloud-foundry
+#     │   └── mitre
+#     │       ├── suse-cna
+#     │       └── cve-cna
 #     ├── maintsecteam
-#     │   ├── maintenance wr
+#     │   ├── maintenance-wr
 #     │   ├── workreport
 #     │   └── smash-smelt
 #     ├── security-reports
-#     │   ├── Embargo Alerts
-#     │   └── Chromium
+#     │   ├── embargo-alerts
+#     │   └── chromium
 #     ├── devel
 #     ├── high-impact-vul
 #     ├── high-impact-vul-info
@@ -38,7 +38,7 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #     ├── linux
 #     ├── maint-coord
 #     ├── maintsec-reports
-#     │   └── channels changes
+#     │   └── channels-changes
 #     ├── research
 #     ├── results
 #     ├── secure-boot
@@ -50,31 +50,16 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #     │   └── image
 #     └── users
 
-# rule:[devel]
-# https://mailman.suse.de/mailman/listinfo/devel
-if header :contains "List-Id" "<devel.suse.de>" { fileinto :create "INBOX/ML/SUSE/devel"; stop; }
-
-# rule:[high-impact-vul]
-# https://mailman.suse.de/mailman/listinfo/high-impact-vul
-if header :contains "List-Id" "<high-impact-vul.suse.de>" { fileinto :create "INBOX/ML/SUSE/high-impact-vul"; stop; }
-
-# rule:[high-impact-vul-info]
-# https://mailman.suse.de/mailman/listinfo/high-impact-vul-info
-if header :contains "List-Id" "<high-impact-vul-info.suse.de>" { fileinto :create "INBOX/ML/SUSE/high-impact-vul-info"; stop; }
-
-# rule:[kernel]
-# https://mailman.suse.de/mailman/listinfo/kernel
-if header :contains "List-Id" "<kernel.suse.de>" { fileinto :create "INBOX/ML/SUSE/kernel"; stop; }
-
 # rule:[maintsecteam - Maintenance_Weekly-Report]
-if allof ( header  :contains "List-Id" "<maintsecteam.suse.de>",
-           address :is       "From"    "maint-coord@suse.de",
+if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
+           address :is "From" "maint-coord@suse.de",
            # The subject contains ( Maintenance && Weekly Report )
            header :contains "Subject" "Maintenance",
            header :contains "Subject" "Weekly Report" ) {
-    fileinto :create "INBOX/ML/SUSE/maintsecteam/maintenance wr";
+    fileinto :create "INBOX/ML/SUSE/maintsecteam/maintenance-wr";
     stop;
 }
+
 # rule:[maintsecteam - workreports]
 if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
            # The subject contains ( workreport || (work && report) )
@@ -84,6 +69,7 @@ if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
     fileinto :create "INBOX/ML/SUSE/maintsecteam/workreport";
     stop;
 }
+
 # rule:[maintsecteam - SMESH-SMELT_Releases]
 if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
            # The subject contains ( released || (SMASH && SMELT) )
@@ -93,164 +79,139 @@ if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
     fileinto :create "INBOX/ML/SUSE/maintsecteam/smash-smelt";
     stop;
 }
-# rule:[maintsecteam]
-# https://mailman.suse.de/mailman/listinfo/maintsecteam
-if header :contains "List-Id" "<maintsecteam.suse.de>" { fileinto :create "INBOX/ML/SUSE/maintsecteam"; stop; }
 
 # rule:[maintsec-reports - channel file changed]
 # Note: it seems that only SLE12 changes are sent over this ML.
 if allof ( header :contains "List-Id" "<maintsec-reports.suse.de>",
            header :contains "Subject" "Channel changes for" ) {
-    fileinto :create "INBOX/ML/SUSE/maintsec-reports/channels changes";
+    fileinto :create "INBOX/ML/SUSE/maintsec-reports/channels-changes";
     stop;
 }
-# rule:[maintsec-reports]
-# https://mailman.suse.de/mailman/listinfo/maintsec-reports
-if header :contains "List-Id" "<maintsec-reports.suse.de>" { fileinto :create "INBOX/ML/SUSE/maintsec-reports"; stop; }
-
-# rule:[maint-coord]
-# https://mailman.suse.de/mailman/listinfo/maint-coord
-if header :contains "List-Id" "<maint-coord.suse.de>" { fileinto :create "INBOX/ML/SUSE/maint-coord"; stop; }
-
-# rule:[research]
-# https://mailman.suse.de/mailman/listinfo/research
-if header :contains "List-Id" "<research.suse.de>" { fileinto :create "INBOX/ML/SUSE/research"; stop; }
-
-# rule:[results]
-# https://mailman.suse.de/mailman/listinfo/results
-if header :contains "List-Id" "<results.suse.de>" { fileinto :create "INBOX/ML/SUSE/results"; stop; }
-
-# rule:[secure-boot]
-# https://mailman.suse.de/mailman/listinfo/secure-boot
-if header :contains "List-Id" "<secure-boot.suse.de>" { fileinto :create "INBOX/ML/SUSE/secure-boot"; stop; }
-
-# rule:[secure-devel]
-# https://mailman.suse.de/mailman/listinfo/secure-devel
-if header :contains "List-Id" "<secure-devel.suse.de>" { fileinto :create "INBOX/ML/SUSE/secure-devel"; stop; }
 
 # rule:[security - redhat noise]
 # Remove all the noise made by the RH ServiceNow instance
-if allof ( header  :contains "List-Id" "<security.suse.de>",
-           header  :is       "X-ServiceNow-Generated" "true",
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           header :is "X-ServiceNow-Generated" "true",
            anyof ( address :is "From" "secalert@redhat.com",
                    address :is "From" "infosec@redhat.com" )) {
     fileinto :create "INBOX/Trash";
     stop;
 }
+
 # rule:[security - XSA]
-if allof ( header  :contains "List-Id" "<security.suse.de>",
-           address :is       "From"    "security@xen.org" ) {
-    fileinto :create "INBOX/ML/SUSE/security/Xen/Security Advisory";
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           address :is "From" "security@xen.org" ) {
+    fileinto :create "INBOX/ML/SUSE/security/xen/security-advisory";
     stop;
 }
-# rule:[security - xen]
-if allof ( header :contains "List-Id"     "<security.suse.de>",
-           header :is       "X-BeenThere" "xen-security-issues-discuss@lists.xenproject.org" ) {
-    fileinto :create "INBOX/ML/SUSE/security/Xen";
+
+# rule:[security - Xen]
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           header :is "X-BeenThere" "xen-security-issues-discuss@lists.xenproject.org" ) {
+    fileinto :create "INBOX/ML/SUSE/security/xen";
     stop;
 }
-# rule:[security - ceph]
+
+# rule:[security - Ceph]
 if allof ( header :contains "List-Id" "<security.suse.de>",
            anyof ( address :is "CC" "security@ceph.io",
                    address :is "To" "security@ceph.io" )) {
-    fileinto :create "INBOX/ML/SUSE/security/Ceph";
+    fileinto :create "INBOX/ML/SUSE/security/ceph";
     stop;
 }
+
 # rule:[security - MariaDB]
-if allof ( header  :contains "List-Id" "<security.suse.de>",
-           address :is       "From"    "announce@mariadb.org") {
-    fileinto :create "INBOX/ML/SUSE/security/MariaDB";
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           address :is "From" "announce@mariadb.org") {
+    fileinto :create "INBOX/ML/SUSE/security/mariadb";
     stop;
 }
+
 # rule:[security - Django]
 if allof ( header :contains "List-Id" "<security.suse.de>",
            header :contains "Subject" "Django security releases") {
-    fileinto :create "INBOX/ML/SUSE/security/Django";
+    fileinto :create "INBOX/ML/SUSE/security/django";
     stop;
 }
+
 # rule:[security - Kubernetes]
-if allof ( header  :contains "List-Id" "<security.suse.de>",
-           address :contains "To"      "@kubernetes.io") {
-    fileinto :create "INBOX/ML/SUSE/security/Kubernetes";
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           address :contains "To" "@kubernetes.io") {
+    fileinto :create "INBOX/ML/SUSE/security/kubernetes";
     stop;
 }
+
 # rule:[security - Cloud Foundry]
-if allof ( header   :contains   "List-Id" "<security.suse.de>",
-           envelope :domain :is "From"    "cloudfoundry.org") {
-    fileinto :create "INBOX/ML/SUSE/security/Cloud Foundry";
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           envelope :domain :is "From" "cloudfoundry.org") {
+    fileinto :create "INBOX/ML/SUSE/security/cloud-foundry";
     stop;
 }
+
 # rule:[security - Mitre SUSE CNA report]
-if allof ( header   :contains "List-Id" "<security.suse.de>",
-           header   :is       "From"    "cna-coordinator@mitre.org",
-           header   :contains "Subject" "suse CNA Report") {
-    fileinto :create "INBOX/ML/SUSE/security/Mitre/SUSE CNA";
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           header :is "From" "cna-coordinator@mitre.org",
+           header :contains "Subject" "suse CNA Report") {
+    fileinto :create "INBOX/ML/SUSE/security/mitre/suse-cna";
     stop;
 }
+
 # rule:[security - Mitre CVE-CNA]
-if allof ( header   :contains   "List-Id" "<security.suse.de>",
-           anyof ( envelope :domain :is "From"          "mitre.org",
-                   header   :contains   "X-Envelope-To" "@mitre.org" )) {
-    fileinto :create "INBOX/ML/SUSE/security/Mitre/CVE-CNA";
+if allof ( header :contains "List-Id" "<security.suse.de>",
+           anyof ( envelope :domain :is "From" "mitre.org",
+                   header :contains "X-Envelope-To" "@mitre.org" )) {
+    fileinto :create "INBOX/ML/SUSE/security/mitre/cve-cna";
     stop;
 }
+
 # rule:[security - qemu security]
 # https://lists.nongnu.org/mailman/listinfo/qemu-security
-if header :contains "List-Id" "<qemu-security.nongnu.org>" { fileinto :create "INBOX/ML/SUSE/security/Qemu"; stop; }
-# rule:[security]
-# https://mailman.suse.de/mailman/listinfo/security
-if header :contains "List-Id" "<security.suse.de>" { fileinto :create "INBOX/ML/SUSE/security"; stop; }
-
-# rule:[security-intern]
-# https://mailman.suse.de/mailman/listinfo/security-intern
-if header :contains "List-Id" "<security-intern.suse.de>" { fileinto :create "INBOX/ML/SUSE/security-intern"; stop; }
+if header :contains "List-Id" "<qemu-security.nongnu.org>" { fileinto :create "INBOX/ML/SUSE/security/qemu"; stop; }
 
 # rule:[security-reports - Embargo Alerts]
 if allof ( header :contains "List-Id" "<security-reports.suse.de>",
            header :contains "Subject" "EMBARGOED ISSUE MENTIONED IN" ) {
-    fileinto :create "INBOX/ML/SUSE/security-reports/Embargo Alerts"; 
+    fileinto :create "INBOX/ML/SUSE/security-reports/embargo-alerts";
     stop;
 }
+
 # rule:[security-reports - Embargo date missing]
 if allof ( header :contains "List-Id" "<security-reports.suse.de>",
            header :contains "Subject" "OBS:EmbargoDate not set for" ) {
-    fileinto :create "INBOX/ML/SUSE/security-reports/Embargo Alerts"; 
+    fileinto :create "INBOX/ML/SUSE/security-reports/embargo-alerts";
     stop;
 }
+
 # rule:[security-reports - Chromium Releases]
 if allof ( header :contains "List-Id" "<security-reports.suse.de>",
            header :contains "Subject" "Chromium Stable" ) {
-    fileinto :create "INBOX/ML/SUSE/security-reports/Chromium";
+    fileinto :create "INBOX/ML/SUSE/security-reports/chromium";
     stop;
 }
-# rule:[security-reports]
-# https://mailman.suse.de/mailman/listinfo/security-reports
-if header :contains "List-Id" "<security-reports.suse.de>" { fileinto :create "INBOX/ML/SUSE/security-reports"; stop; }
-
-# rule:[security-review]
-# https://mailman.suse.de/mailman/listinfo/security-review
-if header :contains "List-Id" "<security-review.suse.de>" { fileinto :create "INBOX/ML/SUSE/security-review"; stop; }
 
 # rule:[security-team - no US-CERT]
 # Discard newsletters coming US-CERT because these are duplicated for me as I'm already subscribed to that list
 # ML -> SecList -> CERT Advisories
-if allof ( header  :contains "List-Id" "<security-team.suse.de>",
-           address :is       "From"    "US-CERT@ncas.us-cert.gov" ) {
+if allof ( header :contains "List-Id" "<security-team.suse.de>",
+           address :is "From" "US-CERT@ncas.us-cert.gov" ) {
     discard;
     stop;
 }
+
 # rule:[security-team - xorg-security ML]
-if allof ( header :contains "List-Id"     "<security-team.suse.de>",
+if allof ( header :contains "List-Id"  "<security-team.suse.de>",
            header :contains "X-BeenThere" "xorg-security@lists.x.org" ) {
-    fileinto :create "INBOX/ML/SUSE/security-team/Xorg";
+    fileinto :create "INBOX/ML/SUSE/security-team/xorg";
     stop;
 }
+
 # rule:[security-team - Samba ML]
 if allof ( header :contains "List-Id" "<security-team.suse.de>",
-           header :contains "From"    "samba-bugs@samba.org" ) {
-    fileinto :create "INBOX/ML/SUSE/security-team/Samba";
+           header :contains "From" "samba-bugs@samba.org" ) {
+    fileinto :create "INBOX/ML/SUSE/security-team/samba";
     stop;
 }
+
 # rule:[security-team - security-team and me in CC ]
 # When someone follows up on a thread where I'm also in CC, I want it in the same ML folder
 if allof (     address :contains "CC" "security-team@suse.de",
@@ -259,30 +220,32 @@ if allof (     address :contains "CC" "security-team@suse.de",
     fileinto :create "INBOX/ML/SUSE/security-team";
     stop;
 }
-# rule:[security-team]
-# https://mailman.suse.de/mailman/listinfo/security-team
-if header :contains "List-Id" "<security-team.suse.de>" { fileinto :create "INBOX/ML/SUSE/security-team"; stop; }
-
-# rule:[users]
-# https://mailman.suse.de/mailman/listinfo/users
-if header :contains "List-Id" "<users.suse.de>" { fileinto :create "INBOX/ML/SUSE/users"; stop; }
-
-# rule:[linux]
-# http://lists.suse.com/mailman/listinfo/linux
-if header :contains "List-Id" "<linux.lists.suse.com>" { fileinto :create "INBOX/ML/SUSE/linux"; stop; }
 
 # rule:[sle-security-updates - containers]
 if allof ( header :contains "List-Id" "<sle-security-updates.lists.suse.com>",
-           body   :contains           "SUSE Container Update Advisory" ) {
-    fileinto :create "INBOX/ML/SUSE/sle-security-updates/container"; 
+           body :contains "SUSE Container Update Advisory" ) {
+    fileinto :create "INBOX/ML/SUSE/sle-security-updates/container";
     stop;
 }
+
 # rule:[sle-security-updates - images]
 if allof ( header :contains "List-Id" "<sle-security-updates.lists.suse.com>",
-           body   :contains           "SUSE Image Update Advisory" ) {
-    fileinto :create "INBOX/ML/SUSE/sle-security-updates/image"; 
+           body :contains "SUSE Image Update Advisory" ) {
+    fileinto :create "INBOX/ML/SUSE/sle-security-updates/image";
     stop;
 }
-# rule:[sle-security-updates]
-# https://lists.suse.com/mailman/listinfo/sle-security-updates
-if header :contains "List-Id" "<sle-security-updates.lists.suse.com>" { fileinto :create "INBOX/ML/SUSE/sle-security-updates"; stop; }
+
+# rule:[catch all *.lists.suse.com]
+if header :matches "List-Id" "*<*.lists.suse.com>" {
+    set :lower "ML_NAME" "${2}";
+    fileinto :create "INBOX/ML/SUSE/suse-${ML_NAME}";
+    stop;
+}
+
+# rule:[catch all *.suse.de]
+# default rule for remaining internal MLs
+if header :matches "List-Id" "*<*.suse.de>" {
+    set :lower "ML_NAME" "${2}";
+    fileinto :create "INBOX/ML/SUSE/${ML_NAME}";
+    stop;
+}

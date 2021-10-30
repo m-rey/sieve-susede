@@ -4,12 +4,12 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 ######################
 #####  Bugzilla  #####
 ######################
-# Tools
-# └── Bugzilla
-#     ├── Direct
-#     └── Security Team
-#         ├── Embargoed
-#         └── Reassigned back
+# TOOLS
+# └── bugzilla
+#     ├── direct
+#     └── security-team
+#         ├── embargoed
+#         └── reassigned-back
 
 # rule:[mute bots]
 # Do not allow bots to make noise to specific Bugzilla's sub-folder,
@@ -39,22 +39,22 @@ if allof ( address  :is "From" "bugzilla_noreply@suse.com",
 }
 
 # rule:[Embargoed notification]
-if allof ( address :is "From" "bugzilla_noreply@suse.com", 
+if allof ( address :is "From" "bugzilla_noreply@suse.com",
            address :is "To" "security-team@suse.de",
            header  :contains "Subject" "EMBARGOED" ) {
-    fileinto :create "INBOX/Tools/Bugzilla/Security Team/Embargoed";
+    fileinto :create "INBOX/TOOLS/bugzilla/security-team/embargoed";
     stop;
 }
 
 # rule:[No Longer Embargoed]
 # Embargoed issues when become public
-if allof ( address    :is "From" "bugzilla_noreply@suse.com", 
+if allof ( address    :is "From" "bugzilla_noreply@suse.com",
            address    :is "To" "security-team@suse.de",
            header     :is "X-Bugzilla-Type" "changed",
            header     :contains "X-Bugzilla-Changed-Fields" "short_desc",
            not header :contains "Subject" "EMBARGOED",
            body       :contains "EMBARGOED" ) {
-    fileinto :create "INBOX/Tools/Bugzilla/Security Team/Embargoed";
+    fileinto :create "INBOX/TOOLS/bugzilla/security-team/embargoed";
     stop;
 }
 
@@ -66,7 +66,7 @@ if allof ( address :is "From" "bugzilla_noreply@suse.com",
            header  :is "X-Bugzilla-Type" "changed",
            header  :is "X-Bugzilla-Changed-Fields" "cc",
            body    :contains "|${SUSECOM_ADDR}" ) {
-    fileinto :create "INBOX/Tools/Bugzilla/Direct";
+    fileinto :create "INBOX/TOOLS/bugzilla/direct";
     stop;
 }
 
@@ -85,13 +85,13 @@ if allof ( address  :is       "From" "bugzilla_noreply@suse.com",
 # rule:[direct notification]
 if allof ( address :is "From" "bugzilla_noreply@suse.com",
            address :is "To" "${SUSECOM_ADDR}" ) {
-    fileinto :create "INBOX/Tools/Bugzilla/Direct";
+    fileinto :create "INBOX/TOOLS/bugzilla/direct";
     stop;
 }
 
 # rule:[maint-coord - catch all]
 # Discard all the issues assigned to maint-coord
-if allof ( address :is "From" "bugzilla_noreply@suse.com", 
+if allof ( address :is "From" "bugzilla_noreply@suse.com",
            address :is "To" "maint-coord@suse.de" ) {
     fileinto :create "INBOX/Trash";
     stop;
@@ -99,18 +99,18 @@ if allof ( address :is "From" "bugzilla_noreply@suse.com",
 
 # rule:[security - reassigned]
 # Issues re-assigned to security-team
-if allof ( address :is "From" "bugzilla_noreply@suse.com", 
+if allof ( address :is "From" "bugzilla_noreply@suse.com",
            header  :is "x-bugzilla-assigned-to" "security-team@suse.de",
            header  :is "X-Bugzilla-Type" "changed",
            header  :contains "x-bugzilla-changed-fields" "assigned_to" ) {
-    fileinto :create "INBOX/Tools/Bugzilla/Security Team/Reassigned back";
+    fileinto :create "INBOX/TOOLS/bugzilla/security-team/reassigned-back";
     stop;
 }
 
 # rule:[BZ - security]
 # Notifications sent to security-team, no bot's messages end up here.
-if allof ( address :is "From" "bugzilla_noreply@suse.com", 
+if allof ( address :is "From" "bugzilla_noreply@suse.com",
            address :is "To" "security-team@suse.de" ) {
-    fileinto :create "INBOX/Tools/Bugzilla/Security Team";
+    fileinto :create "INBOX/TOOLS/bugzilla/security-team";
     stop;
 }
