@@ -23,7 +23,7 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #     │   ├── cloud-foundry
 #     │   └── mitre
 #     │       ├── suse-cna
-#     │       └── cve-cna
+#     │       └── mitre
 #     ├── maintsecteam
 #     │   ├── maintenance-wr
 #     │   ├── workreport
@@ -172,7 +172,7 @@ if allof ( header :contains "List-Id" "<security.suse.de>",
 if allof ( header :contains "List-Id" "<security.suse.de>",
            anyof ( envelope :domain "From" "mitre.org",
                    header :contains "X-Envelope-To" "@mitre.org" )) {
-    fileinto :create "INBOX/ML/SUSE/security/mitre/cve-cna";
+    fileinto :create "INBOX/ML/SUSE/security/mitre/mitre";
     stop;
 }
 
