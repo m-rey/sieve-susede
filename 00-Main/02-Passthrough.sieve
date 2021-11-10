@@ -25,4 +25,4 @@ if allof ( address :domain "From" ["suse.com", "suse.de"],
 if header :matches "Message-ID" "<*/*/releases/*@github.com>" { fileinto :create "INBOX/NOTIFY/release"; }
 
 # rule:[calendar]
-if body :content "text/calendar" :contains "" { fileinto "INBOX/CALENDAR"; stop; }
+if body :content "text/calendar" :contains "" { fileinto :create "INBOX/CALENDAR"; }
