@@ -23,7 +23,7 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #     │   ├── cloud-foundry
 #     │   └── mitre
 #     │       ├── suse-cna
-#     │       └── cve-cna
+#     │       └── mitre
 #     ├── maintsecteam
 #     │   ├── maintenance-wr
 #     │   ├── workreport
@@ -37,6 +37,7 @@ global [ "SUSEDE_ADDR", "SUSECOM_ADDR", "BZ_USERNAME" ];
 #     ├── kernel
 #     ├── linux
 #     ├── maint-coord
+#     │   └── QA Failed
 #     ├── maintsec-reports
 #     │   └── channels-changes
 #     ├── research
@@ -72,9 +73,9 @@ if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
 
 # rule:[maintsecteam - SMESH-SMELT_Releases]
 if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
-           # The subject contains ( released || (SMASH && SMELT) )
-           anyof ( header :contains "Subject" "released",
-                   allof ( header :contains "Subject" "smash",
+           # The subject contains ( release && (smash || smelt) )
+           allof ( header :contains "Subject" "release",
+                   anyof ( header :contains "Subject" "smash",
                            header :contains "Subject" "smelt" ))) {
     fileinto :create "INBOX/ML/SUSE/maintsecteam/smash-smelt";
     stop;
@@ -85,6 +86,17 @@ if allof ( header :contains "List-Id" "<maintsecteam.suse.de>",
 if allof ( header :contains "List-Id" "<maintsec-reports.suse.de>",
            header :contains "Subject" "Channel changes for" ) {
     fileinto :create "INBOX/ML/SUSE/maintsec-reports/channels-changes";
+    stop;
+}
+
+# rule:[maint-coord - only failed tests]
+# Discard all the successful QA test notifications and put the failed ones into a dedicated folder
+if allof ( header  :contains "List-Id" "<maint-coord.suse.de>",
+           address :is       "From"    "qa-maintenance@suse.de",
+           header  :contains "Subject" "SUSE:Maintenance:" ) {
+    if    body :contains "SUMMARY: PASSED" { discard; }
+    elsif body :contains "SUMMARY: FAILED" { fileinto :create "INBOX/ML/SUSE/maint-coord/qa-failed"; }
+    else                                   { fileinto :create "INBOX/ML/SUSE/maint-coord"; }
     stop;
 }
 
@@ -143,7 +155,7 @@ if allof ( header :contains "List-Id" "<security.suse.de>",
 
 # rule:[security - Cloud Foundry]
 if allof ( header :contains "List-Id" "<security.suse.de>",
-           envelope :domain :is "From" "cloudfoundry.org") {
+           envelope :domain "From" "cloudfoundry.org") {
     fileinto :create "INBOX/ML/SUSE/security/cloud-foundry";
     stop;
 }
@@ -158,9 +170,9 @@ if allof ( header :contains "List-Id" "<security.suse.de>",
 
 # rule:[security - Mitre CVE-CNA]
 if allof ( header :contains "List-Id" "<security.suse.de>",
-           anyof ( envelope :domain :is "From" "mitre.org",
+           anyof ( envelope :domain "From" "mitre.org",
                    header :contains "X-Envelope-To" "@mitre.org" )) {
-    fileinto :create "INBOX/ML/SUSE/security/mitre/cve-cna";
+    fileinto :create "INBOX/ML/SUSE/security/mitre/mitre";
     stop;
 }
 

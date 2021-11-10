@@ -37,7 +37,7 @@ INBOX
 │   │   │   ├── Cloud Foundry
 │   │   │   └── Mitre
 │   │   │       ├── SUSE CNA
-│   │   │       └── CVE-CNA
+│   │   │       └── Mitre
 │   │   ├── maintsecteam
 │   │   │   ├── maintenance wr
 │   │   │   ├── workreport
@@ -51,6 +51,7 @@ INBOX
 │   │   ├── kernel
 │   │   ├── linux
 │   │   ├── maint-coord
+│   │   │   └── QA Failed
 │   │   ├── maintsec-reports
 │   │   │   └── channels changes
 │   │   ├── research
